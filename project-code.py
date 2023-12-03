@@ -27,11 +27,11 @@ for item in countries_set:
 countries_weights=[]
 for item in countries_set:
     countries_weights.append(countries.count(item))
-plt.hist(countries_set,weights=countries_weights)
-plt.ylabel('Repeatitions')
-plt.xlabel('Countries')
-plt.title("Countries Repeatition Histogram")
-plt.show()
+#plt.hist(countries_set,weights=countries_weights)
+#plt.ylabel('Repeatitions')
+#plt.xlabel('Countries')
+#plt.title("Countries Repeatition Histogram")
+#plt.show()
 
 #get the browsers and identify the most popular ones.
 browsers=[]
@@ -64,4 +64,63 @@ for item in browsers_set:
 #plt.title("Browsers Repeatition Histogram")
 #plt.show()
 
+#readers time spent.
+#first I will add the users in a set.
+users_set = []
+for log in data['logs']:
+    users_set.append(log['visitor_uuid'])
+users_set=set(users_set)
+#now that we have list of users we have to calculate reading time spent for each user.
+#need a dictionary to specify time spent for each user.
+timeSpent_dict={}
+for user in users_set:
+    #create a 'time_spent' variable to store the sum of time spent.
+    time_spent=0
+    for log in data['logs']:
+        #check for user event type and uuid to sum up the reading time.
+        if(log['visitor_uuid']==user) and log['event_type']=="pagereadtime":
+            time_spent+=log['event_readtime']
+    #if user has spent time on reading.
+    if time_spent!=0:
+        timeSpent_dict[user]=time_spent
+#now that we have the dictionary, let's find the top 10 readers!
+top_readers=[]
+i = 0
+for t in timeSpent_dict:
+    #making sure max number won't pass 10
+    if i<10:
+        #finding max value's key
+        max = max(zip(timeSpent_dict.values(),timeSpent_dict.keys()))[1]
+        #add it to our list
+        top_readers.append(max)
+        #change the value to -1 to prevent selecting this key for next iterations
+        timeSpent_dict[max]=-1
+        i+=1
+    else:
+        #if it passed we just break.
+        break
 
+#'Also likes' functionality.
+#for this functionality we need readers of that document.
+#return all the users that have read the document.
+def also_likes_doc(doc_uuid):
+    readers=[]
+    for log in data['logs']:
+        if log['env_doc_id']==doc_uuid:
+            readers.append(log['visitor_uuid'])
+    #remove the repeatitions.
+    set(readers)
+    return readers
+#return the whole documents that have been read by user.
+def also_likes_user(user_uuid):
+    docs = []
+    for log in data['logs']:
+        if log['visitor_uuid']==user_uuid:
+            docs.append(log['evn_doc_id'])
+    set(docs)
+    return docs
+#now the 'also likes' function
+def also_likes(doc_uuid,user_uuid):
+    #TODO - need the also likes function 5-C completed.
+    print("TODO - need the also likes function 5-C completed.")
+    
