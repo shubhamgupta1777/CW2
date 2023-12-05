@@ -38,16 +38,11 @@ def json_format(path):
     output_file.close()
     return output_file
 
-#using the function to convert data to correct format.
-json_format('sample_small.json')
-file = open('output_file.json')
-data = json.load(file)
-
 #-------------------------------------------Read File Ends-------------------------------------------#
 
 
 #-------------------------------------------Get Countries and Show Histogram-------------------------------------------#
-def get_countries():
+def get_countries(data):
     #get the list of countries.
     countries = []
     for log in data['logs']:
@@ -75,6 +70,7 @@ def show_countries_hist(countries,countries_set,countries_weights):
     #plt.title("Countries Repeatition Histogram")
     #plt.show()
     print()
+
 
 
 #-------------------------------------------Get Countries and Show Histogram-------------------------------------------#
@@ -198,3 +194,11 @@ def also_likes(doc_uuid,user_uuid):
     return top_ten
 
 #-------------------------------------------Also Likes Ends-------------------------------------------#
+
+#using the function to convert data to correct format.
+json_format('sample_small.json')
+file = open('output_file.json')
+data = json.load(file)
+
+data = get_countries(data)
+show_countries_hist(data[0],data[1],data[2])
