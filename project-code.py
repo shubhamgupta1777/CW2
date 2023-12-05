@@ -8,7 +8,7 @@ import os
 def json_format(path):
     import linecache as l
     # Input file path
-    input_file_path = 'sample_600k_lines.json'
+    input_file_path = 'sample_small.json'
 
     # Output directory
     output_directory = 'output_files/'
