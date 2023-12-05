@@ -1,12 +1,44 @@
 import json
-#to create graphs/histograms we use matplotlib.
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
-#open the json file.
-f = open('sample_small.json')
-#read the data.
-data=json.load(f)
+
+def json_format(path):
+    import linecache as l
+    # Input file path
+    input_file_path = 'sample_tiny.json'
+
+    # Output directory
+    output_directory = 'output_files/'
+
+    # Create the output directory if it doesn't exist
+
+    os.makedirs(output_directory, exist_ok=True)
+
+    # Initialize variables
+    line_count = 1
+    output_file = open(f'output_file.json', 'w')
+    # Read input file and write to different files
+    with open(input_file_path, 'r') as input_file:
+        lines = input_file.readlines()
+        output_file.write('{"logs":[\n')
+        l = ''
+        for i,line in enumerate(lines):
+            l = line 
+            if i != len(lines)-1:
+                if '}' in line: 
+                    output_file.write(l.replace('}',"},"))
+            else:
+                output_file.write(l.replace('}',"}\n]}"))
+            line_count += 1
+    output_file.close()
+    return output_file
+
+#using the function to convert data to correct format.
+json_format('sample_tiny.json')
+file = open('output_file.json')
+data = json.load(file)
 
 #get the list of countries.
 countries = []
@@ -90,11 +122,11 @@ for t in timeSpent_dict:
     #making sure max number won't pass 10
     if i<10:
         #finding max value's key
-        max = max(zip(timeSpent_dict.values(),timeSpent_dict.keys()))[1]
+        maximum = max(timeSpent_dict)
         #add it to our list
         top_readers.append(max)
         #change the value to -1 to prevent selecting this key for next iterations
-        timeSpent_dict[max]=-1
+        timeSpent_dict[maximum]=-1
         i+=1
     else:
         #if it passed we just break.
