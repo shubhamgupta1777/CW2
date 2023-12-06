@@ -88,39 +88,6 @@ def show_browsers_hist(browsers,browsers_set,browsers_weights):
 
 #-------------------------------------------Get Users Time Spent-------------------------------------------#
 
-# dummy function used to test top 10 readers
-def print_top_readers():
-    data = ['ade7e1f63bc83c66',
-            'ade7e1f63bc83c66',
-            'ade7e1f63bc83c66',
-            'ade7e1f63bc83c66',
-            'ade7e1f63bc83c66',
-            'ade7e1f63bc83c66',
-            'ade7e1f63bc83c66',
-            'ade7e1f63bc83c66',
-            'ade7e1f63bc83c66',
-            'ade7e1f63bc83c66']
-
-    root = Tk()
-    setup_window(root, 'Top 10 Readers', 200, 220)
-
-    
-    table = ttk.Treeview(root)
-    table["columns"] = ("Column 1",)
-    table["show"] = "headings"
-
-    # Add column
-    table.heading("Column 1", text="Reader_ID")
-    table.column("Column 1", width=200,)
-
-    # Insert data into the tree
-    for item in data:
-        table.insert("", "end", values=(item,))
-
-    table.pack(side="left", fill="both", expand=True)  
-
-
-
 def user_timeSpent():
     global data
     #readers time spent.
@@ -151,7 +118,8 @@ def user_timeSpent():
         top_readers.append(max)
         #change the value to -1 to prevent selecting this key for next iterations
         timeSpent_dict[maximum]=-1
-    return top_readers
+
+    print_data(top_readers,'Top 10 Readers','Readers ID')
 
 #-------------------------------------------Get Users Time Spent Ends-------------------------------------------#
 
@@ -197,11 +165,39 @@ def also_likes(doc_uuid,user_uuid):
         maximum = max(repetitons)
         top_ten.append(maximum)
         repetitons.pop(maximum)
-    return top_ten
+
+    print_data(top_ten, 'Also Likes','Document ID')
+
 
 #-------------------------------------------Also Likes Ends-------------------------------------------#
 
 #----------------------------------------------------------- GUI -----------------------------------------------------------#
+# function for printing data
+def print_data(data, t, c):
+
+    root = Tk()
+    root.title(t)
+
+    
+    table = ttk.Treeview(root)
+    table["columns"] = ("Column 1",)
+    table["show"] = "headings"
+
+    # Add column
+    table.heading("Column 1", text=c)
+    table.column("Column 1", width=200,)
+
+    # Insert data into the tree
+    for item in data:
+        table.insert("", "end", values=(item,))
+
+    table.pack(side="left", fill="both", expand=True) 
+
+def getResults(doc_id, vis_id):
+    if doc_id == '' or vis_id == '':
+        pass
+    else:
+        also_likes(doc_id, vis_id)
 
 def setup_window(window, t, w, h):
       # this function setup the given window with given attributes like height, width and title 
@@ -245,24 +241,43 @@ def run_Analyzer():
       # Data Analyzer is run here
       global main, flag
       analyzer = Tk()
-      setup_window(analyzer, 'Data Analyzer',500,70)
+      setup_window(analyzer, 'Data Analyzer',500,200)
       main = analyzer
       flag = 1
       analyzer.protocol("WM_DELETE_WINDOW", exit_analyzer)
-      
+      top_frame = Frame(analyzer)
+      top_frame.grid(row=0)
+      bottom_frame = Frame(analyzer)
+      bottom_frame.grid(row=1)
+
       # View by Countries
-      country_button = Button(analyzer, text="View by Countries", command=get_countries)
+      country_button = Button(top_frame, text="View by Countries", command=get_countries)
       # View by Browsers
-      browser_button = Button(analyzer, text="View by Browsers", command=get_browsers)
+      browser_button = Button(top_frame, text="View by Browsers", command=get_browsers)
       # View Top 10 Readers
-      reader_button = Button(analyzer, text="Top 10 Readers", command=print_top_readers) # change this function
-
-      country_button.grid(row=1, column=0, padx=10, pady=10)
-      browser_button.grid(row=1, column=2, padx=10, pady=10)
-      reader_button.grid(row=1, column=3, padx=10, pady=10)
-
-      analyzer.mainloop()
+      reader_button = Button(top_frame, text="Top 10 Readers", command=user_timeSpent)
       
+      country_button.grid(row=0, column=0, padx=10, pady=10)
+      browser_button.grid(row=0, column=1, padx=10, pady=10)
+      reader_button.grid(row=0, column=2, padx=10, pady=10)
+
+      doc = Label(bottom_frame, text='Document_ID')
+      doc.grid(row=0, column=0)
+      doc_id = Entry(bottom_frame)
+      doc_id.grid(row=0, column=1)
+      
+      
+      vis = Label(bottom_frame, text='Visitor_ID')
+      vis.grid(row=1,column=0)
+      vis_id = Entry(bottom_frame)
+      vis_id.grid(row=1, column=1)
+
+      # View Top 10 documents of Also Likes functionality
+      also_like_btn = Button(bottom_frame, text='Also Likes', command=lambda: getResults(doc_id.get(), vis_id.get()))
+      also_like_btn.grid(row=2, column=1)
+      analyzer.mainloop()
+
+
 def exit_analyzer():
      # performing on closing operations after exiting the analyzer
      global flag, main, window
@@ -280,9 +295,9 @@ def load_data(file_path):
 # main window
 window = Tk()
 main = window
-window.overrideredirect(1)
-setup_window(window,'Data Analysis Application', 700, 500)
 
+setup_window(window,'Data Analysis Application', 700, 500)
+window.protocol("WM_DELETE_WINDOW", exit)
 top = Frame(window, height=400, width=700)
 top.grid(row=0)
 bg_img = Image.open('bg.webp').resize((700,400))
