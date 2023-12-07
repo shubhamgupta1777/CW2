@@ -53,8 +53,6 @@ def get_countries():
     countries_set = set(countries)
 
     #get number of countries.
-    #for giving the number of each country to it we need a dictionary.
-    #first element of this dictionary is the name of country and the second one is the number of repeatitions.
     countries_weights = []
     #to create histograms we need to export the values from dictionary and give them to hist().
     for item in countries_set:
